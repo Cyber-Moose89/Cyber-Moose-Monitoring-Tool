@@ -44,8 +44,6 @@
 - **TclError during Tkinter Initialization:**
   - Ensure that your Python installation includes Tkinter. Reinstall Python if necessary.
   
-- **Missing Tray Icon Files:**
-  - If you encounter file not found errors related to `assets/icon.png`, ensure that the image files are correctly placed in the `assets` directory.
 
 ## Contributing
 
