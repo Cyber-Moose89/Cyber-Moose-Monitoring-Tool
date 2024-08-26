@@ -31,7 +31,7 @@ class ServiceMonitorApp:
         self.config = configparser.ConfigParser()
         self.config.read('config.ini')
 
-        # Initialize variables
+        # Initialize
         self.services = []
         self.processes = []
         self.selected_services = self.config.get('MONITORING', 'Services', fallback='').split(',')
@@ -113,7 +113,7 @@ class ServiceMonitorApp:
     def create_about_widgets(self):
         """Create widgets for the About tab."""
 
-        # Create a label frame to hold the about text and make it responsive
+        # label frame to hold the about text and make it responsive
         self.about_label_frame = tk.Frame(self.about_frame)
         self.about_label_frame.pack(expand=True, fill="both", padx=10, pady=10)
 
@@ -138,7 +138,7 @@ class ServiceMonitorApp:
                       "Contact: +972 52 993 50 37\n\n"
                       "© 2024 Cyber Moose (Alex Losev). All rights reserved.")
 
-        # Create the label with responsive wrapping
+        # label with responsive wrapping
         self.about_label = tk.Label(
             self.about_label_frame,
             text=about_text,
@@ -148,12 +148,12 @@ class ServiceMonitorApp:
         )
         self.about_label.pack(expand=True, fill="both", padx=10, pady=10)
 
-        # Bind the <Configure> event to dynamically adjust the wraplength
+        # dynamically adjust the wraplength
         self.about_label_frame.bind("<Configure>", self.update_wraplength)
 
     def update_wraplength(self, event):
         """Update the wraplength of the about text when the window size changes."""
-        new_wraplength = event.width - 40  # Adjust wraplength based on new width
+        new_wraplength = event.width - 40  # wraplength based on new width
         self.about_label.config(wraplength=new_wraplength)
 
     def create_system_status_widgets(self):
@@ -182,7 +182,7 @@ class ServiceMonitorApp:
                 self.disk_labels.append((label, usage_label))
                 row += 1
 
-        # Scrollable frames for services and processes
+        # frames for services and processes
         self.services_scroll_frame = tk.Frame(self.system_status_frame)
         self.services_scroll_frame.grid(row=row, column=0, columnspan=2, pady=(10, 0), sticky='nsew')
         row += 1
@@ -194,7 +194,7 @@ class ServiceMonitorApp:
         self.services_canvas = tk.Canvas(self.services_scroll_frame)
         self.processes_canvas = tk.Canvas(self.processes_scroll_frame)
 
-        # Add a scrollbar to the canvas
+        # scrollbar to the canvas
         self.services_scrollbar = tk.Scrollbar(self.services_scroll_frame, orient="vertical",
                                                command=self.services_canvas.yview)
         self.services_canvas.configure(yscrollcommand=self.services_scrollbar.set)
@@ -228,7 +228,7 @@ class ServiceMonitorApp:
         tk.Button(self.controls_frame, text="Show CPU/RAM Graph", command=self.show_graphical_monitoring,
                   font=('Helvetica', 12), bg="#E0E0E0", fg="black").grid(row=0, column=2, sticky='ew', padx=5, pady=5)
 
-        # Bottom label for creator information
+        # Bottom label
         self.footer_label = tk.Label(self.system_status_frame, text="Created by Alex Losev | +972 52 993 50 37",
                                      font=('Helvetica', 10, 'italic'))
         self.footer_label.grid(row=row + 2, column=0, columnspan=2, pady=10, sticky='e')
@@ -461,19 +461,19 @@ class ServiceMonitorApp:
         self.notebook.select(frame)
 
     def create_tray_icon(self):
-        # Load the icon image for the tray
+        # icon image for the tray
         image = Image.open("assets/icon.png")
 
-        # Create the tray icon menu
+        # tray icon menu
         menu = (
             item('Show', self.show_window),
             item('Exit', self.exit_app)
         )
 
-        # Create the tray icon
+        # tray icon
         self.tray_icon = pystray.Icon("CyberMoose Watch", image, "CyberMoose Watch", menu)
 
-        # Start the tray icon in a separate thread
+        # tray icon in a separate thread
         threading.Thread(target=self.tray_icon.run, daemon=True).start()
 
     def hide_window(self):
@@ -717,7 +717,7 @@ class ServiceMonitorApp:
             except Exception as e:
                 if attempt == self.max_restart_attempts.get():
                     success = False
-                time.sleep(5)  # Wait a bit before trying again
+                time.sleep(5)  #!!!!!!! Wait a bit before trying again !!!!!!#
 
         self.send_restart_report(service_name, success, attempt)
 
@@ -753,15 +753,15 @@ class ServiceMonitorApp:
                                                   self.disk_thresholds[partition.device])
 
     def handle_hardware_overload(self, name, current_usage, threshold):
-        # Get current system uptime
+        # current system uptime
         uptime_seconds = time.time() - psutil.boot_time()
         uptime = time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
 
-        # Get current CPU and RAM usage details
+        # current CPU and RAM usage details
         cpu_usage = psutil.cpu_percent(interval=1)
         ram_usage = psutil.virtual_memory().percent
 
-        # Get disk usage details
+        # disk usage details
         partitions = psutil.disk_partitions()
         disk_usage_details = []
         for partition in partitions:
@@ -769,7 +769,7 @@ class ServiceMonitorApp:
                 usage = psutil.disk_usage(partition.mountpoint).percent
                 disk_usage_details.append(f"{partition.device}: {usage}% used")
 
-        # Get the top processes by CPU and memory
+        # top processes by CPU and memory
         top_processes_by_cpu = sorted(psutil.process_iter(['name', 'cpu_percent']),
                                       key=lambda p: p.info.get('cpu_percent', 0), reverse=True)[:5]
         top_processes_by_memory = sorted(psutil.process_iter(['name', 'memory_percent']),
@@ -781,7 +781,7 @@ class ServiceMonitorApp:
         top_memory_processes = "\n".join(
             [f"{proc.info['name']}: {proc.info['memory_percent']:.2f}% Memory" for proc in top_processes_by_memory])
 
-        # Format the detailed message
+        # detailed message
         detailed_body = f"""
         <html>
         <body>
@@ -851,7 +851,7 @@ class ServiceMonitorApp:
         # Update the subject to ensure it's the latest from the settings
         subject = self.email_subject.get()
 
-        # Gather additional system details
+        # additional system details
         cpu_usage = psutil.cpu_percent(interval=1)
         ram_usage = psutil.virtual_memory().percent
         memory_info = psutil.virtual_memory()
@@ -877,7 +877,7 @@ class ServiceMonitorApp:
         top_ram_processes_details = "\n".join(
             [f"{proc.info['name']}: {proc.info['memory_percent']:.2f}% RAM" for proc in top_processes_by_ram])
 
-        # If a service or process name is provided, make it bold in the body
+        # service or process name, make it bold in the body
         if service_or_process_name:
             body = f"""
             <html>
@@ -925,7 +925,7 @@ class ServiceMonitorApp:
         msg['To'] = ', '.join(email_to_list)
         msg['Subject'] = subject  # Ensure the latest subject is used here
 
-        # Attach the HTML version of the body
+        # HTML version of the body
         msg.attach(MIMEText(body, 'html'))
 
         try:
@@ -983,12 +983,12 @@ class ServiceMonitorApp:
             print(f"Failed to {action} service '{service_name}': {e}")
 
     def show_graphical_monitoring(self):
-        # Create a new window for the graphs
+        #  new window for the graphs
         graph_window = tk.Toplevel(self.root)
         graph_window.title("Graphical Monitoring")
         graph_window.geometry("800x900")  # Set a default window size
 
-        # Create the CPU usage graph
+        #  CPU usage graph
         cpu_fig, cpu_ax = plt.subplots()
         cpu_ax.set_title("CPU Usage Over Time")
         cpu_ax.set_xlabel("Time (s)")
@@ -997,7 +997,7 @@ class ServiceMonitorApp:
         cpu_canvas = FigureCanvasTkAgg(cpu_fig, master=graph_window)
         cpu_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        # Create the RAM usage graph
+        #  RAM usage graph
         ram_fig, ram_ax = plt.subplots()
         ram_ax.set_title("RAM Usage Over Time")
         ram_ax.set_xlabel("Time (s)")
@@ -1006,7 +1006,7 @@ class ServiceMonitorApp:
         ram_canvas = FigureCanvasTkAgg(ram_fig, master=graph_window)
         ram_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        # Start updating the graphs in a separate thread
+        # updating the graphs in a separate thread
         threading.Thread(target=self.update_graphs, args=(cpu_ax, ram_ax), daemon=True).start()
 
     def update_graphs(self, cpu_ax, ram_ax):
@@ -1031,7 +1031,7 @@ class ServiceMonitorApp:
             cpu_ax.set_ylim(0, 100)
             ram_ax.set_ylim(0, 100)
 
-            # Redraw the canvas
+            # Redraw  canvas
             cpu_ax.figure.canvas.draw()
             ram_ax.figure.canvas.draw()
 

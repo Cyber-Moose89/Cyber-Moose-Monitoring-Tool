@@ -52,4 +52,4 @@ def check_disk_space(app):
             if usage > app.disk_thresholds[partition.device]:
                 app.handle_hardware_overload(f"Disk Space {partition.device}", usage, app.disk_thresholds[partition.device])
 
-# Other monitoring-related methods...
+
